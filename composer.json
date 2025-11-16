@@ -1,5 +1,5 @@
 {
-    "name": "seion/seat-charinfo",
+    "name": "adoreparler/seat-charinfo",
     "description": "A SeAT plugin for viewing charcter info summary",
     "type": "seat-plugin",
     "license": "MIT",
