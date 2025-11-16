@@ -2,7 +2,7 @@
 
 return [
     'view' => [
-        'label' => 'View Character Info',
+        'label'       => 'View Character Info',
         'description' => 'Allows viewing the character information summary.',
     ],
 ];

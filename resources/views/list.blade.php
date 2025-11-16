@@ -25,7 +25,11 @@
                     <td>{{ $char['name'] }}</td>
                     <td>{{ $char['location'] }}</td>
                     <td>{{ $char['ship'] }}</td>
-                    <td><span class="label label-{{ $char['token_status'] === 'Valid' ? 'success' : 'danger' }}">{{ $char['token_status'] }}</span></td>
+                    <td>
+                        <span class="label label-{{ $char['token_status'] === 'Valid' ? 'success' : 'danger' }}">
+                            {{ $char['token_status'] }}
+                        </span>
+                    </td>
                     <td>{{ $char['first_login'] }}</td>
                     <td>{{ $char['last_login'] }}</td>
                     <td>{{ $char['corporation'] }}</td>

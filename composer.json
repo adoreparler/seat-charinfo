@@ -15,13 +15,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Seat\\Charinfo\\": "src/"
+            "Adoreparler\\Seat\\Charinfo\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Seat\\Charinfo\\CharinfoServiceProvider"
+                "Adoreparler\\Seat\\Charinfo\\CharinfoServiceProvider"
             ]
         }
     },

@@ -1,6 +1,6 @@
 <?php
 
-namespace Seat\Charinfo;
+namespace Adoreparler\Seat\Charinfo;
 
 use Seat\Services\AbstractSeatPlugin;
 
@@ -21,7 +21,7 @@ class CharinfoServiceProvider extends AbstractSeatPlugin
     public function getName(): string { return 'Character Info'; }
     public function getPackage(): string { return 'seat-charinfo'; }
     public function getVersion(): string { return '1.0.0'; }
-    public function getAuthor(): string { return 'Adore Parler'; }
+    public function getAuthor(): string { return 'Adoreparler'; }
     public function getIcon(): string { return 'fas fa-info-circle'; }
     public function getUrl(): ?string { return 'https://github.com/adoreparler/seat-charinfo'; }
 }
