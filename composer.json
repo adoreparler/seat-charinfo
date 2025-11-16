@@ -1,6 +1,6 @@
 {
     "name": "adoreparler/seat-charinfo",
-    "description": "A SeAT plugin for viewing charcter info summary",
+    "description": "A SeAT plugin for viewing character info summary",
     "type": "seat-plugin",
     "license": "MIT",
     "require": {
@@ -9,15 +9,16 @@
     },
     "autoload": {
         "psr-4": {
-            "Seion\\SeatCharinfo\\": "src/"
+            "Seat\\Charinfo\\": "src/"
         }
     },
-    "minimum-stability": "stable",
     "extra": {
         "laravel": {
             "providers": [
-                "Seion\\Charinfo\\CharinfoServiceProvider"
+                "Seat\\Charinfo\\CharinfoServiceProvider"
             ]
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

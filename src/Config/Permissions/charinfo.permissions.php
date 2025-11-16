@@ -2,8 +2,7 @@
 
 return [
     'view' => [
-        'label' => 'charinfo::permissions.charinfo_view_label',
-        'description' => 'charinfo::permissions.charinfo_view_description',
-        'division' => 'assets',
+        'label' => 'View Character Info',
+        'description' => 'Allows viewing the character information summary.',
     ],
 ];

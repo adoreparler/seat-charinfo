@@ -2,47 +2,35 @@
 
 namespace Seat\Charinfo\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Seat\Services\Http\Controller;
-use Seat\Web\Models\User;
-use Seat\Characters\Models\Character\CharacterAffiliation;
-use Seat\Characters\Models\Character\CharacterInfo;
-use Seat\Characters\Models\Character\CharacterLocation;
-use Seat\Characters\Models\Character\CharacterShip;
+use Seat\Web\Http\Controllers\Controller;
+use Seat\Eveapi\Models\Character\CharacterInfo;
+use Seat\Eveapi\Models\Character\CharacterLocation;
+use Seat\Eveapi\Models\Character\CharacterShip;
+use Seat\Eveapi\Models\Character\CharacterAffiliation;
 
 class CharinfoController extends Controller
 {
-    public function list(Request $request)
+    public function list()
     {
-        // Get characters the user can access (via affiliations)
-        $characters = User::find(auth()->id())
-            ->getAffiliatedCharacters()
-            ->with(['affiliation', 'location.solarSystem', 'ship.shipType'])
-            ->get();
+        $user = auth()->user();
+        $characters = $user->characters()->with([
+            'location.solar_system',
+            'ship.ship_type',
+            'affiliation.corporation',
+        ])->get();
 
-        $character_data = $characters->map(function ($character) {
-            $latest_location = $character->location()->latest()->first();
-            $latest_ship = $character->ship()->latest()->first();
-            $latest_affiliation = CharacterAffiliation::where('character_id', $character->character_id)
-                ->latest('updated_at')
-                ->first();
-
+        $data = $characters->map(function ($char) {
             return [
-                'name' => $character->name,
-                'location' => $latest_location ? $latest_location->solarSystem->name : 'Unknown',
-                'ship' => $latest_ship ? $latest_ship->shipType->name : 'Unknown',
-                'token_status' => (
-                    $character->refresh_token &&
-                    $character->token_expires_at &&
-                    $character->token_expires_at->gt(now())
-                ) ? 'Valid' : 'Expired/Invalid',
-                'first_login' => $character->created_at->format('Y-m-d H:i'),
-                'last_login' => $character->updated_at->format('Y-m-d H:i'),
-                'corporation' => $latest_affiliation ? $latest_affiliation->corporation->name : 'Unknown',
-                'character' => $character, // For linking to full character sheet
+                'name' => $char->name,
+                'location' => $char->location?->solar_system?->name ?? 'Unknown',
+                'ship' => $char->ship?->ship_type?->name ?? 'Unknown',
+                'token_status' => ($char->refresh_token && $char->token_expires_at?->isFuture()) ? 'Valid' : 'Expired',
+                'first_login' => $char->created_at->format('Y-m-d H:i'),
+                'last_login' => $char->updated_at->format('Y-m-d H:i'),
+                'corporation' => $char->affiliation?->corporation?->name ?? 'Unknown',
             ];
         });
 
-        return view('charinfo::list', compact('character_data'));
+        return view('charinfo::list', compact('data'));
     }
 }
