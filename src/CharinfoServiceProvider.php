@@ -8,9 +8,11 @@ class CharinfoServiceProvider extends AbstractSeatPlugin
 {
     public function boot()
     {
-        $this->loadRoutesFrom(__DIR__ . '/Http/routes.php');
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'charinfo');
         $this->mergeConfigFrom(__DIR__ . '/Config/package.character.menu.php', 'package.character.menu');
+
+        // SeAT legacy route loading
+        $this->add_routes();
     }
 
     public function register()
@@ -18,7 +20,17 @@ class CharinfoServiceProvider extends AbstractSeatPlugin
         $this->registerPermissions(__DIR__ . '/Config/Permissions/charinfo.permissions.php', 'charinfo');
     }
 
-    // Required by AbstractSeatPlugin (SeAT 5.x+)
+    /**
+     * Include the routes
+     */
+    public function add_routes()
+    {
+        if (!$this->app->routesAreCached()) {
+            include __DIR__ . '/Http/routes.php';
+        }
+    }
+
+    // Existing required methods (unchanged)
     public function getName(): string
     {
         return 'Character Info';
@@ -44,7 +56,6 @@ class CharinfoServiceProvider extends AbstractSeatPlugin
         return 'https://github.com/adoreparler/seat-charinfo';
     }
 
-    // === NEW REQUIRED METHODS ===
     public function getPackageRepositoryUrl(): string
     {
         return 'https://github.com/adoreparler/seat-charinfo';
