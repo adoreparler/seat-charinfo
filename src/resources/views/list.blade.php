@@ -8,45 +8,42 @@
     </div>
     <div class="card-body">
         @if($data->isEmpty())
-            <p>No characters found. <a href="{{ route('character.add') }}">Add one</a>.</p>
+            <div class="alert alert-info">
+                No characters found or no data available.
+            </div>
         @else
-            <table class="table table-hover table-responsive">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Location</th>
-                        <th>Ship</th>
-                        <th>Token</th>
-                        <th>First Login</th>
-                        <th>Last Login</th>
-                        <th>Corporation</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($data as $char)
-                    <tr>
-                        <td>
-                            @php
-                                $profileRoute = route('character.view.sheet', $char['character_id'], false);
-                            @endphp
-                            <a href="{{ $profileRoute ?: url('character/' . $char['character_id']) }}">
-                                {{ $char['name'] }}
-                            </a>
-                        </td>
-                        <td>{{ $char['location'] }}</td>
-                        <td>{{ $char['ship'] }}</td>
-                        <td>
-                            <span class="label label-{{ $char['token_status'] === 'Valid' ? 'success' : 'danger' }}">
-                                {{ $char['token_status'] }}
-                            </span>
-                        </td>
-                        <td>{{ $char['first_login'] }}</td>
-                        <td>{{ $char['last_login'] }}</td>
-                        <td>{{ $char['corporation'] }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Character</th>
+                            <th>Location</th>
+                            <th>Ship</th>
+                            <th>Token</th>
+                            <th>First Login</th>
+                            <th>Last Login</th>
+                            <th>Corporation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($data as $char)
+                        <tr>
+                            <td><strong>{{ $char['name'] }}</strong></td>
+                            <td>{{ $char['location'] }}</td>
+                            <td>{{ $char['ship'] }}</td>
+                            <td>
+                                <span class="label label-{{ $char['token_status'] === 'Valid' ? 'success' : 'danger' }}">
+                                    {{ $char['token_status'] }}
+                                </span>
+                            </td>
+                            <td>{{ $char['first_login'] }}</td>
+                            <td>{{ $char['last_login'] }}</td>
+                            <td>{{ $char['corporation'] }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         @endif
     </div>
 </div>
