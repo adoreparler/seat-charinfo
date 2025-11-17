@@ -8,6 +8,5 @@ return [
 	'route_segment' => 'charinfo',
 	'permission' => 'charinfo.view',
 	'route' => 'charinfo::list'
-        ],
     ],
 ];
