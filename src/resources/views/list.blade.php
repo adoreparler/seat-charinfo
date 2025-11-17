@@ -8,7 +8,7 @@
     </div>
     <div class="card-body">
         @if($data->isEmpty())
-            <p>No characters available. <a href="{{ route('character.profile', ['character_id' => auth()->user()->characters->first()->character_id ?? '']) }}">Add one here</a>.</p>
+            <p>No characters found. <a href="{{ route('character.add') }}">Add one</a>.</p>
         @else
             <table class="table table-hover">
                 <thead>
@@ -25,7 +25,11 @@
                 <tbody>
                     @foreach($data as $char)
                     <tr>
-                        <td><a href="{{ route('character.profile', ['character_id' => $char_id ?? '']) }}">{{ $char['name'] }}</a></td> {{-- Note: Pass $char_id from controller if adding --}}
+                        <td>
+                            <a href="{{ route('character.view.profile', $char['character_id']) }}">
+                                {{ $char['name'] }}
+                            </a>
+                        </td>
                         <td>{{ $char['location'] }}</td>
                         <td>{{ $char['ship'] }}</td>
                         <td>
