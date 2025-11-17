@@ -9,11 +9,10 @@ class CharinfoController extends Controller
 {
     public function list()
     {
-        // Show all characters if user has the permission, otherwise only their own
         if (auth()->user()->can('charinfo.view_all')) {
             $characters = CharacterInfo::with([
                 'location.solar_system',
-                'ship.type',           // Correct relationship
+                'ship.type',
                 'affiliation.corporation'
             ])->get();
         } else {
@@ -25,14 +24,16 @@ class CharinfoController extends Controller
         }
 
         $data = $characters->map(function ($char) {
+            // CORRECT token check for SeAT 5.x
+            $hasValidToken = !empty($char->scopes) && 
+                            $char->token_expires_at?->isFuture();
+
             return [
                 'character_id' => $char->character_id,
                 'name'         => $char->name,
                 'location'     => $char->location?->solar_system?->name ?? 'Unknown',
                 'ship'         => $char->ship?->type?->typeName ?? 'Unknown',
-                'token_status' => ($char->refresh_token && $char->token_expires_at?->isFuture())
-                    ? 'Valid'
-                    : 'Expired',
+                'token_status' => $hasValidToken ? 'Valid' : 'Expired',
                 'first_login'  => $char->created_at?->format('Y-m-d H:i') ?? '—',
                 'last_login'   => $char->updated_at?->format('Y-m-d H:i') ?? '—',
                 'corporation'  => $char->affiliation?->corporation?->name ?? 'Unknown',
