@@ -8,7 +8,7 @@ class CharinfoServiceProvider extends AbstractSeatPlugin
 {
     public function boot()
     {
-        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'charinfo');
+        $this->loadViewsFrom(__DIR__ . '/resources/views', 'charinfo');
         $this->mergeConfigFrom(__DIR__ . '/Config/charinfo.sidebar.php', 'package.sidebar');
 
         // SeAT legacy route loading
