@@ -8,7 +8,7 @@
     </div>
     <div class="card-body">
         @if($data->isEmpty())
-            <p>No characters found.</p>
+            <p>No characters found. <a href="{{ route('character.add') }}">Add one</a>.</p>
         @else
             <table class="table table-hover table-responsive">
                 <thead>
@@ -26,7 +26,10 @@
                     @foreach($data as $char)
                     <tr>
                         <td>
-                            <a href="{{ route('character.view.sheet', $char['character_id']) }}">
+                            @php
+                                $profileRoute = route('character.view.sheet', $char['character_id'], false);
+                            @endphp
+                            <a href="{{ $profileRoute ?: url('character/' . $char['character_id']) }}">
                                 {{ $char['name'] }}
                             </a>
                         </td>
