@@ -3,10 +3,11 @@
 namespace Adoreparler\Seat\Charinfo\Http\Controllers;
 
 use Seat\Web\Http\Controllers\Controller;
-use Seat\Eveapi\Models\Character\CharacterLocation;
-use Seat\Eveapi\Models\Character\CharacterShip;
-use Seat\Eveapi\Models\Character\CharacterAffiliation;
-use Seat\Eveapi\Models\Character\CharacterInfo;
+
+// Correct SeAT 5.x model paths
+use Seat\Characters\Models\Character\Location;
+use Seat\Characters\Models\Character\Ship;
+use Seat\Characters\Models\Character\Affiliation;
 
 class CharinfoController extends Controller
 {
@@ -14,29 +15,34 @@ class CharinfoController extends Controller
     {
         $user = auth()->user();
 
-        $characters = $user->characters()->get();  // Get base characters
+        $characters = $user->characters()->get();
 
         $data = $characters->map(function ($char) {
             // Latest location
-            $latest_location = CharacterLocation::where('character_id', $char->character_id)
+            $location = Location::where('character_id', $char->character_id)
                 ->latest('recorded_at')
-                ->first();
-            $location = $latest_location?->solar_system?->name ?? 'Unknown';
+                ->first()
+                ?->solar_system
+                ?->name ?? 'Unknown';
 
             // Latest ship
-            $latest_ship = CharacterShip::where('character_id', $char->character_id)
+            $ship = Ship::where('character_id', $char->character_id)
                 ->latest('recorded_at')
-                ->first();
-            $ship = $latest_ship?->ship_type?->name ?? 'Unknown';
+                ->first()
+                ?->ship_type
+                ?->name ?? 'Unknown';
 
-            // Latest affiliation
-            $latest_affiliation = CharacterAffiliation::where('character_id', $char->character_id)
+            // Latest corporation
+            $corp = Affiliation::where('character_id', $char->character_id)
                 ->latest('updated_at')
-                ->first();
-            $corporation = $latest_affiliation?->corporation?->name ?? 'Unknown';
+                ->first()
+                ?->corporation
+                ?->name ?? 'Unknown';
 
-            // Token check
-            $token_status = ($char->refresh_token && $char->token_expires_at?->isFuture()) ? 'Valid' : 'Expired';
+            // Token status
+            $token_status = ($char->refresh_token && $char->token_expires_at?->isFuture())
+                ? 'Valid'
+                : 'Expired';
 
             return [
                 'character_id' => $char->character_id,
@@ -46,7 +52,7 @@ class CharinfoController extends Controller
                 'token_status' => $token_status,
                 'first_login'  => $char->created_at->format('Y-m-d H:i'),
                 'last_login'   => $char->updated_at->format('Y-m-d H:i'),
-                'corporation'  => $corporation,
+                'corporation'  => $corp,
             ];
         });
 
