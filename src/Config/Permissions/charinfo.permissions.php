@@ -2,7 +2,11 @@
 
 return [
     'view' => [
-        'label'       => 'View Character Info',
-        'description' => 'Allows viewing the character information summary.',
+        'label'       => 'View Own Characters',
+        'description' => 'Allows viewing your own characters only.',
+    ],
+    'view_all' => [
+        'label'       => 'View All Characters',
+        'description' => 'Allows viewing all characters registered in SeAT.',
     ],
 ];

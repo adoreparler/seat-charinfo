@@ -1,22 +1,20 @@
 @extends('web::layouts.app')
 
-@section('page_title', 'Character Info')
-
 @section('page_header')
-    <h1>
-        <i class="fa fa-info-circle"></i> Character Summary
-    </h1>
+    <h1><i class="fa fa-info-circle"></i> Character Summary</h1>
 @endsection
 
 @section('content')
-    @if($data->isEmpty())
-        <div class="alert alert-info">
-            <i class="fa fa-info-circle"></i> No characters found or no data available.
-        </div>
-    @else
-        <div class="table-responsive">
-            <table class="table table-striped table-hover">
-                <thead class="thead-default">
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">All Characters in SeAT</h3>
+    </div>
+    <div class="card-body">
+        @if($data->isEmpty())
+            <div class="alert alert-info">No characters found.</div>
+        @else
+            <table id="charinfo-table" class="table table-striped table-hover" style="width:100%">
+                <thead>
                     <tr>
                         <th>Character</th>
                         <th>Location</th>
@@ -30,7 +28,7 @@
                 <tbody>
                     @foreach($data as $char)
                     <tr>
-                        <td><strong>{{ $char['name'] }}</strong></td>
+                        <td>{{ $char['name'] }}</td>
                         <td>{{ $char['location'] }}</td>
                         <td>{{ $char['ship'] }}</td>
                         <td>
@@ -45,6 +43,26 @@
                     @endforeach
                 </tbody>
             </table>
-        </div>
-    @endif
+        @endif
+    </div>
+</div>
+
+@push('javascript')
+<script>
+$(document).ready(function() {
+    $('#charinfo-table').DataTable({
+        "pageLength": 25,
+        "order": [[ 0, "asc" ]],
+        "columnDefs": [
+            { "searchable": false, "targets": [4, 5] }, // Disable search on date columns
+            { "orderable": true, "targets": "_all" }
+        ],
+        "language": {
+            "search": "Filter:",
+            "lengthMenu": "Show _MENU_ characters"
+        }
+    });
+});
+</script>
+@endpush
 @endsection
