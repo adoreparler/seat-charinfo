@@ -3,41 +3,35 @@
 namespace Adoreparler\Seat\Charinfo\Http\Controllers;
 
 use Seat\Web\Http\Controllers\Controller;
-
-// Correct SeAT 5.x model paths
-use Seat\Characters\Models\Character\Location;
-use Seat\Characters\Models\Character\Ship;
-use Seat\Characters\Models\Character\Affiliation;
+use Seat\Eveapi\Models\Character\CharacterInfo;
+use Seat\Eveapi\Models\Character\CharacterLocation;
+use Seat\Eveapi\Models\Character\CharacterAffiliation;
+use Seat\Eveapi\Models\Assets\CharacterAsset;  // Ship data is here!
 
 class CharinfoController extends Controller
 {
     public function list()
     {
         $user = auth()->user();
-
         $characters = $user->characters()->get();
 
-        $data = $characters->map(function ($char) {
+        $data = $characters->map(function (CharacterInfo $char) {
             // Latest location
-            $location = Location::where('character_id', $char->character_id)
-                ->latest('recorded_at')
-                ->first()
-                ?->solar_system
-                ?->name ?? 'Unknown';
+            $location = CharacterLocation::where('character_id', $char->character_id)
+                ->latest('created_at')
+                ->first()?->solar_system?->name ?? 'Unknown';
 
-            // Latest ship
-            $ship = Ship::where('character_id', $char->character_id)
-                ->latest('recorded_at')
-                ->first()
-                ?->ship_type
-                ?->name ?? 'Unknown';
+            // Latest ship (from assets - current ship is the installed item in hangar)
+            $ship = CharacterAsset::where('character_id', $char->character_id)
+                ->where('location_flag', 'InstalledItem')  // Current ship
+                ->where('location_type', 'item')
+                ->latest('created_at')
+                ->first()?->item?->type?->name ?? 'Unknown';
 
             // Latest corporation
-            $corp = Affiliation::where('character_id', $char->character_id)
+            $corp = CharacterAffiliation::where('character_id', $char->character_id)
                 ->latest('updated_at')
-                ->first()
-                ?->corporation
-                ?->name ?? 'Unknown';
+                ->first()?->corporation?->name ?? 'Unknown';
 
             // Token status
             $token_status = ($char->refresh_token && $char->token_expires_at?->isFuture())
