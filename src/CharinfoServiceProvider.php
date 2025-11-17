@@ -9,7 +9,7 @@ class CharinfoServiceProvider extends AbstractSeatPlugin
     public function boot()
     {
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'charinfo');
-        $this->mergeConfigFrom(__DIR__ . '/Config/package.character.menu.php', 'package.character.menu');
+        $this->mergeConfigFrom(__DIR__ . '/Config/charinfo.sidebar.php', 'package.sidebar');
 
         // SeAT legacy route loading
         $this->add_routes();
@@ -25,9 +25,7 @@ class CharinfoServiceProvider extends AbstractSeatPlugin
      */
     public function add_routes()
     {
-        if (!$this->app->routesAreCached()) {
-            include __DIR__ . '/Http/routes.php';
-        }
+	    $this->loadRoutesFrom(__DIR__ . '/Http/routes.php');
     }
 
     // Existing required methods (unchanged)
