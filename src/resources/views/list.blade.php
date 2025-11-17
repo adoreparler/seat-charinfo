@@ -7,7 +7,7 @@
 @section('content')
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">All Characters in SeAT</h3>
+        <h3 class="card-title">All Registered Characters</h3>
     </div>
     <div class="card-body">
         @if($data->isEmpty())
@@ -28,7 +28,7 @@
                 <tbody>
                     @foreach($data as $char)
                     <tr>
-                        <td>{{ $char['name'] }}</td>
+                        <td><strong>{{ $char['name'] }}</strong></td>
                         <td>{{ $char['location'] }}</td>
                         <td>{{ $char['ship'] }}</td>
                         <td>
@@ -48,18 +48,22 @@
 </div>
 
 @push('javascript')
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+
 <script>
 $(document).ready(function() {
     $('#charinfo-table').DataTable({
-        "pageLength": 25,
-        "order": [[ 0, "asc" ]],
-        "columnDefs": [
-            { "searchable": false, "targets": [4, 5] }, // Disable search on date columns
-            { "orderable": true, "targets": "_all" }
+        pageLength: 25,
+        order: [[0, 'asc']],
+        columnDefs: [
+            { searchable: false, targets: [4, 5] }, // Disable search on date columns
+            { orderable: true, targets: '_all' }
         ],
-        "language": {
-            "search": "Filter:",
-            "lengthMenu": "Show _MENU_ characters"
+        language: {
+            search: "Filter:",
+            lengthMenu: "Show _MENU_ characters"
         }
     });
 });
