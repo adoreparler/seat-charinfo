@@ -9,24 +9,30 @@ class CharinfoController extends Controller
 {
     public function list()
     {
+        // Build the base query with refresh_token relationship
+        $baseQuery = CharacterInfo::with([
+            'location.solar_system',
+            'ship.type',
+            'affiliation.corporation',
+            'refresh_token', // This is the key!
+        ]);
+
+        // Apply permission filter
         if (auth()->user()->can('charinfo.view_all')) {
-            $characters = CharacterInfo::with([
-                'location.solar_system',
-                'ship.type',
-                'affiliation.corporation'
-            ])->get();
+            $characters = $baseQuery->get();
         } else {
             $characters = auth()->user()->characters()->with([
                 'location.solar_system',
                 'ship.type',
-                'affiliation.corporation'
+                'affiliation.corporation',
+                'refresh_token',
             ])->get();
         }
 
         $data = $characters->map(function ($char) {
-            // CORRECT token check for SeAT 5.x
-            $hasValidToken = !empty($char->scopes) && 
-                            $char->token_expires_at?->isFuture();
+            // Now $char->refresh_token is the actual RefreshToken model (or null)
+            $hasValidToken = $char->refresh_token &&
+                            $char->refresh_token->expires_on?->isFuture();
 
             return [
                 'character_id' => $char->character_id,
